@@ -3,62 +3,55 @@ interface generalSearch {
     manufacturerName: string;
     partName: string;
 }
+interface targetSearch {
+    id: number;
+    manufacturerName: string;
+    partName: string;
+
+    displayPartNumber: string;
+    minimalPrice: number;
+    name: string;
+    partNumber: number;
+    manufacturer: {
+        id: number;
+        name: string;
+    }
+}
 
 const request = require('request-promise');
 
 exports.generalSearch = async (str: string) => {
-    const url1 = `https://webapi.autodoc.ru/api/manufacturers/${str}?showAll=false`
+    const url = `https://webapi.autodoc.ru/api/manufacturers/${str}?showAll=false`
     try {
-        let resp = await request(url1);
-        let respPars: generalSearch[] = JSON.parse(resp);
+        const resp = await request(url);
+        const respParse: generalSearch[] = JSON.parse(resp);
 
-        console.log('respPars :', respPars);
-        
-        if (!respPars || respPars.length == 0) {
+        console.log('generalSearch respParse:', respParse);
+
+        if (respParse && respParse.length > 1) {
+            return respParse;
+        } else {
             return null;
-        }
-        if (respPars && respPars.length > 1) {
-            return respPars;
-        }
-
-        console.log('resp', respPars);
-        const url2 = `https://webapi.autodoc.ru/api/spareparts/analogs/${respPars[0].id}/${str}/null`;
-
-        let resp2 = await request(url2);
-        console.log('resp2', resp2);
-        let respPars2 = JSON.parse(resp2);
-        
-
-        return respPars2;
+        }  
     } catch (e) {
         console.log('e :', e);
     }
 
 };
-exports.targetSearch = async (str: string) => {
-    const url1 = `https://webapi.autodoc.ru/api/manufacturers/${str}?showAll=false`
+
+exports.targetSearch = async (str: string, id: number) => {
     try {
-        let resp = await request(url1);
-        let respPars: generalSearch[] = JSON.parse(resp);
+        const url = `https://webapi.autodoc.ru/api/spareparts/analogs/${id}/${str}/null?isrecross=false`;
 
-        console.log('respPars :', respPars);
-        
-        if (!respPars || respPars.length == 0) {
+        const resp = await request(url);
+        console.log('targetSearch resp', resp);
+        const respParse = JSON.parse(resp);        
+
+        if (respParse && respParse.length > 1) {
+            return respParse;
+        } else {
             return null;
-        }
-        if (respPars && respPars.length > 1) {
-            return respPars;
-        }
-
-        console.log('resp', respPars);
-        const url2 = `https://webapi.autodoc.ru/api/spareparts/analogs/${respPars[0].id}/${str}/null`;
-
-        let resp2 = await request(url2);
-        console.log('resp2', resp2);
-        let respPars2 = JSON.parse(resp2);
-        
-
-        return respPars2;
+        }  
     } catch (e) {
         console.log('e :', e);
     }
