@@ -2,9 +2,9 @@
   "name": "carpartspercentageback",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "app.ts",
   "scripts": {
-    "start": "node app.js",
+    "start": "ts-node app.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -20,7 +20,11 @@
   "dependencies": {
     "express": "^4.16.3",
     "request": "^2.87.0",
-    "request-promise": "^4.2.2",
+    "request-promise": "^4.2.2"
+  },
+  "devDependencies": {
+    "@types/node": "^10.5.5",
+    "ts-node": "^7.0.0",
     "typescript": "^3.0.1"
   }
 }
