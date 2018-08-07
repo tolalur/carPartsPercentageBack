@@ -4,18 +4,31 @@ interface generalSearch {
     partName: string;
 }
 interface targetSearch {
-    id: number;
-    manufacturerName: string;
-    partName: string;
-
-    displayPartNumber: string;
-    minimalPrice: number;
-    name: string;
     partNumber: number;
+    displayPartNumber: string;
+    name: string;
     manufacturer: {
         id: number;
         name: string;
     }
+    minimalPrice: number;
+}
+interface targetSearchAnalog {
+    isOfficial: boolean;
+    partNumber: string;
+    name: string;
+    manufacturer: {
+        id: number;
+        name: string;
+    }
+    minimalPrice: number;
+}
+interface targetSearchAnalogs {
+    analogs: targetSearchAnalog[];
+}
+interface autodocTargetSearch {
+    item: targetSearch;
+    analogs: targetSearchAnalog[];
 }
 
 const request = require('request-promise');
@@ -41,19 +54,27 @@ exports.generalSearch = async (str: string) => {
 
 exports.targetSearch = async (str: string, id: number) => {
     try {
+        const urlAnalogs = `https://webapi.autodoc.ru/api/spareparts/${id}/${str}/null`;
         const url = `https://webapi.autodoc.ru/api/spareparts/analogs/${id}/${str}/null?isrecross=false`;
 
-        const resp = await request(url);
-        console.log('targetSearch resp', resp);
-        const respParse = JSON.parse(resp);        
+        const analogs = await request(url);
+        const analogsJson: targetSearchAnalogs = JSON.parse(analogs);
+        
+        const item = await request(urlAnalogs);
+        const itemJson: targetSearch = JSON.parse(item);
+        const autodoc: autodocTargetSearch = {
+            item: {
+                partNumber: itemJson.partNumber,
+                displayPartNumber: itemJson.displayPartNumber,
+                name: itemJson.name,
+                manufacturer: itemJson.manufacturer,
+                minimalPrice: itemJson.minimalPrice,
+            },
+            analogs: analogsJson.analogs
+        }
+        console.log('analogsJson itemJson', autodoc);
 
-        if (respParse && respParse.length > 1) {
-            return respParse;
-        } else {
-            return null;
-        }  
-    } catch (e) {
-        console.log('e :', e);
-    }
+        return autodoc;
+    } catch (e) { console.log('e :', e) }
 
 };
