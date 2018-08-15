@@ -1,16 +1,34 @@
-import { generalSearch, targetSearchAnalogs, targetSearch, autodocTargetSearch} from './types'
+import { generalSearch, targetSearchAnalogs, targetSearch, autodocTargetSearch } from './types'
+
+interface generalSearchResp {
+    href: string,
+    manufacturerName: string,
+    partName: string
+}
 const request = require('request-promise');
+const cheerio = require('cheerio');
 
 exports.generalSearch = async (str: string) => {
-    const url = `https://webapi.autodoc.ru/api/manufacturers/${str}?showAll=false`
+    const url = `https://www.exist.ru/Price/?pcode=${str}`
     try {
-        const resp = await request(url);
-        const respParse: generalSearch[] = JSON.parse(resp);
+        const text = await request(url);
+        console.log('данные загружены');
+        const $ = cheerio.load(text);
+        console.log('данные загружены в парсер');
 
-        console.log('generalSearch respParse:', respParse);
+        let response: Array<generalSearchResp> = [];
 
-        if (respParse && respParse.length > 0) {
-            return respParse;
+        $('ul.catalogs > li > a').each(function (i: number, elem: any) {
+            response.push({
+                href: $(elem).attr('href'),
+                manufacturerName: $(elem).find('span > b').text(),
+                partName: $(elem).find('dd').text()
+            });
+        });
+        console.log('response :', response);
+
+        if (response.length > 0) {
+            return response;
         } else {
             return null;
         }  

@@ -4,6 +4,7 @@
 const express = require('express');
 let app = express();
 const autodocApi = require('./autodocApi');
+const existApi = require('./existApi');
 
 app.use('/api/general/:detailNumber', async (req: any, res: any) => {
     console.log('back general search');
@@ -12,6 +13,7 @@ app.use('/api/general/:detailNumber', async (req: any, res: any) => {
     const response = { autodoc: [], exist: [] };
 
     response.autodoc = await autodocApi.generalSearch(detailNumber);
+    response.exist = await existApi.generalSearch(detailNumber);
 
     res.send(JSON.stringify(response));
 });
