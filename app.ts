@@ -18,7 +18,7 @@ app.use('/api/general/:detailNumber', async (req: any, res: any) => {
     res.send(JSON.stringify(response));
 });
 
-app.use('/api/target/:detailNumber/:id', async (req: any, res: any) => {
+app.use('/api/target/autodoc/:detailNumber/:id', async (req: any, res: any) => {
     console.log('back target search', req.params);
 
     const {detailNumber, id} = req.params;
