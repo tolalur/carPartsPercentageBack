@@ -46,3 +46,19 @@ exports.targetSearch = async (str: string, id: number) => {
     } catch (e) { console.log('e :', e) }
 
 };
+
+function duplicateCount(text) {
+    text.toLocaleLowerCase()
+    const show = (count, text) => {
+        Array(text.length).fill(1).forEach((val, i, arr) => {
+            if (text.slice(1).indexOf(text[0]) > -1) {
+                count++;
+                const newArr = text.slice(1).split('').filter(val => val !== text[0]);
+                console.log(newArr.join(''))
+                show(count, newArr.join(''));
+            }
+        })
+        return count;
+    }
+    return show(0, text.toLocaleLowerCase())
+}
