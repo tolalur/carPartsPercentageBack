@@ -7,9 +7,9 @@ const autodocApi = require('./autodocApi');
 const existApi = require('./existApi');
 
 app.use('/api/general/:detailNumber', async (req: any, res: any) => {
-    console.log('back general search');
+    console.log('back: general search');
 
-    const detailNumber = req.params["detailNumber"];
+    const detailNumber = req.params['detailNumber'];
     const response = { autodoc: [], exist: [] };
 
     response.autodoc = await autodocApi.generalSearch(detailNumber);
@@ -19,9 +19,9 @@ app.use('/api/general/:detailNumber', async (req: any, res: any) => {
 });
 
 app.use('/api/target/autodoc/:detailNumber/:id', async (req: any, res: any) => {
-    console.log('back target search', req.params);
+    console.log('back: target search', req.params);
 
-    const {detailNumber, id} = req.params;
+    const { detailNumber, id } = req.params;
     const response = { autodoc: {}, exist: [] };
 
     response.autodoc = await autodocApi.targetSearch(detailNumber, id);

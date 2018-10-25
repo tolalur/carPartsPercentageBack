@@ -47,9 +47,9 @@ exports.targetSearch = async (str: string, id: number) => {
 
 };
 
-function duplicateCount(text) {
+function duplicateCount(text: string) {
     text.toLocaleLowerCase()
-    const show = (count, text) => {
+    const show = (count: number, text: string) => {
         Array(text.length).fill(1).forEach((val, i, arr) => {
             if (text.slice(1).indexOf(text[0]) > -1) {
                 count++;

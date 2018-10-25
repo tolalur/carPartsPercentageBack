@@ -31,7 +31,7 @@ exports.generalSearch = async (str: string) => {
             return response;
         } else {
             return null;
-        }  
+        }
     } catch (e) {
         console.log('e :', e);
     }
@@ -45,7 +45,7 @@ exports.targetSearch = async (str: string, id: number) => {
 
         const analogs = await request(url);
         const analogsJson: targetSearchAnalogs = JSON.parse(analogs);
-        
+
         const item = await request(urlAnalogs);
         const itemJson: targetSearch = JSON.parse(item);
         const autodoc: autodocTargetSearch = {
