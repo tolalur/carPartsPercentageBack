@@ -20,7 +20,7 @@ exports.generalSearch = async (str: string) => {
 
         $('ul.catalogs > li > a').each(function (i: number, elem: any) {
             response.push({
-                href: $(elem).attr('href'),
+                href: $(elem).attr('href').slice(12), // удаляем /Price/?pid= из строки адреса, оставляем только нужную информацию
                 manufacturerName: $(elem).find('span > b').text(),
                 partName: $(elem).find('dd').text()
             });
@@ -38,29 +38,30 @@ exports.generalSearch = async (str: string) => {
 
 };
 
-exports.targetSearch = async (str: string, id: number) => {
+exports.targetSearch = async (str: string) => {
+    const url = `https://www.exist.ru/Price/?pid=${str}`;
     try {
-        const urlAnalogs = `https://webapi.autodoc.ru/api/spareparts/${id}/${str}/null`;
-        const url = `https://webapi.autodoc.ru/api/spareparts/analogs/${id}/${str}/null?isrecross=false`;
+        const text = await request(url);
+        console.log('данные загружены');
+        const $ = cheerio.load(text);
+        console.log('данные загружены в парсер');
 
-        const analogs = await request(url);
-        const analogsJson: targetSearchAnalogs = JSON.parse(analogs);
+        let response: generalSearchResp[] = [];
 
-        const item = await request(urlAnalogs);
-        const itemJson: targetSearch = JSON.parse(item);
-        const autodoc: autodocTargetSearch = {
-            item: {
-                partNumber: itemJson.partNumber,
-                displayPartNumber: itemJson.displayPartNumber,
-                name: itemJson.name,
-                manufacturer: itemJson.manufacturer,
-                minimalPrice: itemJson.minimalPrice,
-            },
-            analogs: analogsJson.analogs
+        $('ul.catalogs > li > a').each(function (i: number, elem: any) {
+            response.push({
+                href: $(elem).attr('href').slice(12),
+                manufacturerName: $(elem).find('span > b').text(),
+                partName: $(elem).find('dd').text()
+            });
+        });
+        console.log('response :', response);
+
+        if (response.length > 0) {
+            return response;
+        } else {
+            return null;
         }
-        console.log('analogsJson itemJson', autodoc);
-
-        return autodoc;
     } catch (e) { console.log('e :', e) }
 
 };

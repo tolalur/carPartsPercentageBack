@@ -22,9 +22,19 @@ app.use('/api/target/autodoc/:detailNumber/:id', async (req: any, res: any) => {
     console.log('back: target search', req.params);
 
     const { detailNumber, id } = req.params;
-    const response = { autodoc: {}, exist: [] };
+    const response = { autodoc: {} };
 
     response.autodoc = await autodocApi.targetSearch(detailNumber, id);
+    res.send(JSON.stringify(response));
+});
+
+app.use('/api/target/exist/:detailId/', async (req: any, res: any) => {
+    console.log('back: target search', req.params);
+
+    const { detailId } = req.params;
+    const response = { exist: {} };
+
+    response.exist = await existApi.targetSearch(detailId);
     res.send(JSON.stringify(response));
 });
 
